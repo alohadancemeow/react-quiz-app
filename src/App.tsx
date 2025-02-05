@@ -1,35 +1,111 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useRef, useEffect, useState } from "react";
+import QuizSection from "./components/QuizSection.tsx";
+import Navbar from "./components/Navbar.tsx";
+import { questions } from "./questions.ts";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const popupInfoRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  const quizSectionRef = useRef<HTMLElement>(null);
+  const quizBoxRef = useRef<HTMLDivElement>(null);
+  const questionTextRef = useRef<HTMLDivElement>(null);
+  const questionTotalRef = useRef<HTMLElement>(null);
+
+  const [questionCount, setQuestionCount] = useState(0);
+
+  const onShowPopup = () => {
+    if (!popupInfoRef.current || !mainRef.current) return;
+
+    popupInfoRef.current.classList.add("active");
+    mainRef.current.classList.add("active");
+  };
+
+  const onExitPopup = () => {
+    if (!popupInfoRef.current || !mainRef.current) return;
+
+    popupInfoRef.current.classList.remove("active");
+    mainRef.current.classList.remove("active");
+  };
+
+  const onContinue = () => {
+    if (
+      !popupInfoRef.current ||
+      !mainRef.current ||
+      !quizSectionRef.current ||
+      !quizBoxRef.current
+    )
+      return;
+
+    quizSectionRef.current.classList.add("active");
+    popupInfoRef.current.classList.remove("active");
+    mainRef.current.classList.remove("active");
+    quizBoxRef.current.classList.add("active");
+  };
+
+  const onNext = () => {
+    if (questionCount < questions.length - 1) {
+      setQuestionCount(questionCount + 1);
+    } else {
+      console.log("Question completed!");
+    }
+  };
+
+  useEffect(() => {
+    if (!popupInfoRef.current || !mainRef.current) {
+      console.error("popupInfo or main element not found in the DOM");
+      return;
+    }
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <main ref={mainRef} className="main">
+        <Navbar />
+
+        <div className="container">
+          <QuizSection
+            questionTextRef={questionTextRef}
+            quizBoxRef={quizBoxRef}
+            quizSectionRef={quizSectionRef}
+            questionCount={questionCount}
+            questionTotalRef={questionTotalRef}
+            onNext={onNext}
+          />
+
+          <section className="home">
+            <div className="home-content">
+              <h1>Quiz Website</h1>
+              <p>
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                Veritatis nobis sed recusandae dolorum minus sint.
+              </p>
+              <button className="start-btn" onClick={onShowPopup}>
+                Start Quiz
+              </button>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div ref={popupInfoRef} className="popup-info">
+        <h2>Quiz Guide</h2>
+        <span className="info">1. Lorem ipsum dolor sit amet.</span>
+        <span className="info">2. Lorem ipsum dolor sit amet.</span>
+        <span className="info">3. Lorem ipsum dolor sit amet.</span>
+        <span className="info">4. Lorem ipsum dolor sit amet.</span>
+        <span className="info">5. Lorem ipsum dolor sit amet.</span>
+
+        <div className="btn-group">
+          <button className="info-btn exit-btn" onClick={onExitPopup}>
+            Exit Quiz
+          </button>
+          <a href="#" className="info-btn continue-btn" onClick={onContinue}>
+            Continue
+          </a>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
