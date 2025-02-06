@@ -6,11 +6,16 @@ type Props = {
   quizBoxRef: React.RefObject<HTMLDivElement>;
   questionTextRef: React.RefObject<HTMLDivElement>;
   optionListRef: React.RefObject<HTMLDivElement>;
+  resultBoxRef: React.RefObject<HTMLDivElement>;
+  circularProgressRef: React.RefObject<HTMLDivElement>;
   questionCount: number;
-  useScoreCount: number;
-  setUseScoreCount: React.Dispatch<React.SetStateAction<number>>;
+  userScoreCount: number;
+  progressValueCount: number;
+  setUserScoreCount: React.Dispatch<React.SetStateAction<number>>;
   nextButtonRef: React.RefObject<HTMLButtonElement>;
   onNext: () => void;
+  onTryAgain: () => void;
+  onClear: () => void;
 };
 
 const QuizSection = ({
@@ -20,10 +25,15 @@ const QuizSection = ({
   questionCount,
   questionTotalRef,
   optionListRef,
-  setUseScoreCount,
-  useScoreCount,
+  setUserScoreCount: setUseScoreCount,
+  userScoreCount: useScoreCount,
   nextButtonRef,
+  resultBoxRef,
+  progressValueCount,
+  circularProgressRef,
   onNext,
+  onTryAgain,
+  onClear,
 }: Props) => {
   const onOptionSelected = (e: HTMLDivElement) => {
     if (!optionListRef.current || !nextButtonRef.current) return;
@@ -88,6 +98,28 @@ const QuizSection = ({
           </span>
           <button ref={nextButtonRef} onClick={onNext} className="next-btn">
             Next
+          </button>
+        </div>
+      </div>
+
+      <div ref={resultBoxRef} className="result-box">
+        <h2>Quiz Result!</h2>
+        <div className="percentage-container">
+          <div ref={circularProgressRef} className="circular-progress">
+            <span className="progress-value">{`${progressValueCount} %`}</span>
+          </div>
+
+          <span className="score-text">
+            {`Your score ${useScoreCount} out of ${questions.length}`}
+          </span>
+        </div>
+
+        <div className="buttons">
+          <button className="tryAgain-btn" onClick={onTryAgain}>
+            Try Agagin
+          </button>
+          <button className="goHome-btn" onClick={onClear}>
+            Go to home
           </button>
         </div>
       </div>

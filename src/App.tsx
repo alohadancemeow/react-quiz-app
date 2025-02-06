@@ -12,9 +12,12 @@ function App() {
   const questionTotalRef = useRef<HTMLElement>(null);
   const optionListRef = useRef<HTMLDivElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
+  const resultBoxRef = useRef<HTMLDivElement>(null);
+  const circularProgressRef = useRef<HTMLDivElement>(null);
 
   const [questionCount, setQuestionCount] = useState(0);
-  const [useScoreCount, setUseScoreCount] = useState(0);
+  const [userScoreCount, setUserScoreCount] = useState(0);
+  const [progressValueCount, setProgrssValueCount] = useState(0);
 
   const onShowPopup = () => {
     if (!popupInfoRef.current || !mainRef.current) return;
@@ -46,17 +49,72 @@ function App() {
   };
 
   const onNext = () => {
-    if (!optionListRef.current || !nextButtonRef.current) return;
+    if (
+      !optionListRef.current ||
+      !nextButtonRef.current ||
+      !quizBoxRef.current ||
+      !resultBoxRef.current ||
+      !circularProgressRef.current
+    )
+      return;
 
     if (questionCount < questions.length - 1) {
       setQuestionCount(questionCount + 1);
     } else {
-      console.log("Question completed!");
+      // show result box
+      quizBoxRef.current.classList.remove("active");
+      resultBoxRef.current.classList.add("active");
+
+      let progressStartValue = -1;
+      const progressEndValue = (userScoreCount / questions.length) * 100;
+
+      const progress = setInterval(() => {
+        progressStartValue++;
+        // console.log(progressStartValue);
+
+        setProgrssValueCount(progressStartValue);
+
+        if (circularProgressRef.current) {
+          circularProgressRef.current.style.background = `conic-gradient(#c40094, ${
+            progressStartValue * 3.6
+          }deg, rgba(255, 255, 255, 0.1) 0deg)`;
+        }
+
+        if (progressStartValue === progressEndValue) {
+          clearInterval(progress);
+        }
+      }, 20);
     }
 
     Array.from(optionListRef.current.children).forEach((item) =>
       item.classList.remove("correct", "incorrect", "disabled")
     );
+    nextButtonRef.current.classList.remove("active");
+  };
+
+  const onTryAgain = () => {
+    if (!quizBoxRef.current || !resultBoxRef.current) return;
+
+    setQuestionCount(0);
+    setUserScoreCount(0);
+
+    quizBoxRef.current.classList.add("active");
+    resultBoxRef.current.classList.remove("active");
+  };
+
+  const onClear = () => {
+    if (
+      !quizSectionRef.current ||
+      !resultBoxRef.current ||
+      !nextButtonRef.current
+    )
+      return;
+
+    setQuestionCount(0);
+    setUserScoreCount(0);
+
+    quizSectionRef.current.classList.remove("active");
+    resultBoxRef.current.classList.remove("active");
     nextButtonRef.current.classList.remove("active");
   };
 
@@ -80,10 +138,15 @@ function App() {
             questionCount={questionCount}
             questionTotalRef={questionTotalRef}
             optionListRef={optionListRef}
-            useScoreCount={useScoreCount}
-            setUseScoreCount={setUseScoreCount}
+            userScoreCount={userScoreCount}
+            setUserScoreCount={setUserScoreCount}
             nextButtonRef={nextButtonRef}
+            resultBoxRef={resultBoxRef}
+            progressValueCount={progressValueCount}
+            circularProgressRef={circularProgressRef}
             onNext={onNext}
+            onTryAgain={onTryAgain}
+            onClear={onClear}
           />
 
           <section className="home">
