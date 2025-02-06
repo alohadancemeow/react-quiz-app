@@ -10,8 +10,11 @@ function App() {
   const quizBoxRef = useRef<HTMLDivElement>(null);
   const questionTextRef = useRef<HTMLDivElement>(null);
   const questionTotalRef = useRef<HTMLElement>(null);
+  const optionListRef = useRef<HTMLDivElement>(null);
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
 
   const [questionCount, setQuestionCount] = useState(0);
+  const [useScoreCount, setUseScoreCount] = useState(0);
 
   const onShowPopup = () => {
     if (!popupInfoRef.current || !mainRef.current) return;
@@ -43,11 +46,18 @@ function App() {
   };
 
   const onNext = () => {
+    if (!optionListRef.current || !nextButtonRef.current) return;
+
     if (questionCount < questions.length - 1) {
       setQuestionCount(questionCount + 1);
     } else {
       console.log("Question completed!");
     }
+
+    Array.from(optionListRef.current.children).forEach((item) =>
+      item.classList.remove("correct", "incorrect", "disabled")
+    );
+    nextButtonRef.current.classList.remove("active");
   };
 
   useEffect(() => {
@@ -69,6 +79,10 @@ function App() {
             quizSectionRef={quizSectionRef}
             questionCount={questionCount}
             questionTotalRef={questionTotalRef}
+            optionListRef={optionListRef}
+            useScoreCount={useScoreCount}
+            setUseScoreCount={setUseScoreCount}
+            nextButtonRef={nextButtonRef}
             onNext={onNext}
           />
 
