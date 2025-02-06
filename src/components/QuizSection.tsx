@@ -52,9 +52,9 @@ const QuizSection = ({
 
   return (
     <div ref={refs.quizBox} className="quiz-box">
-      <h1>Codehal Quiz</h1>
+      <h1>Easy Quiz</h1>
       <div className="quiz-header">
-        <span>Quiz website tutorials</span>
+        <span>Easy Mode</span>
         <span className="header-score">
           Score: {`${userScoreCount} / ${questions.length}`}
         </span>

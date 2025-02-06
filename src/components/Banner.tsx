@@ -6,7 +6,7 @@ const Banner = ({ onShowPopup }: Props) => {
   return (
     <section className="home">
       <div className="home-content">
-        <h1>Quiz Website</h1>
+        <h1>Quiz Game</h1>
         <p>
           Welcome to Quiz game! 🎉 Ready to have a blast? Let's get started and
           become a quiz champion together! 🧠✨

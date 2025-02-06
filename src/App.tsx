@@ -82,7 +82,7 @@ function App() {
       setProgressValue(progress);
 
       if (refs.circularProgress.current) {
-        refs.circularProgress.current.style.background = `conic-gradient(#c40094, ${
+        refs.circularProgress.current.style.background = `conic-gradient(var(--accent-color), ${
           progress * 3.6
         }deg, rgba(255, 255, 255, 0.1) 0deg)`;
       }
